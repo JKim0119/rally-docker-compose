@@ -2,12 +2,9 @@ version: '3'
 services:
   api:
     container_name: api
-    image: rally-be
-    build: .
+    image: rallytennisinc/rally-api:1.0.0
     ports:
       - 8080:8080
-    logging:
-      driver: json-file
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SQL_SERVER_URL: ${SQL_SERVER_URL}
@@ -15,14 +12,19 @@ services:
       SQL_SERVER_USER: ${SQL_SERVER_USER}
       AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
       AWS_SECRET_KEY: ${AWS_SECRET_KEY}
-      GOOGLE_APPLICATION_CREDENTIALS: /resources/gcloudCreds.json
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
     depends_on:
       - db
 
   db:
     image: postgres
+    volumes:
+      - rally-db-volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${SQL_SERVER_USER}
       POSTGRES_DB: rally
       POSTGRES_PASSWORD: ${SQL_SERVER_PASS}
+    
+volumes:
+  rally-db-volume:
